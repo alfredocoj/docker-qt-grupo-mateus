@@ -1,38 +1,83 @@
 FROM ubuntu:latest
+MAINTAINER Hadrien Mary <hadrien.mary@gmail.com>
 
-### configuracoes padroes do mateus
+# Install core dependencies
 
-# atualização dos indices dos pacotes
-RUN apt-get update -y
-# compiladores do c++
-RUN apt install build-essential -y
-# driver para conectar ao sql server, postgresql
-RUN apt-get install -y unixodbc unixodbc-dev freetds-dev freetds-bin tdsodbc postgresql-server-dev-all
-# (stack trace do compilador do c++)
-RUN apt-get install -y libdw1 libdw-dev
-# (biblioteca para exibição de gráficos opengl para o qtcreator funcionar a compilação)
-RUN apt-get install -y libgl1-mesa-dev
-
-# (atulização dos indices dos pacotes)
-RUN apt-get update -y
-
-# removendo OpenJDK
-RUN apt-get purge openjdk*
-
-# Install basic software support
 RUN apt-get update && \
-    apt-get install --yes software-properties-common
+    apt-get -y install -y \
+        gcc g++ build-essential cmake bash libxcb1-dev libicu-dev \
+        libssl-dev linux-headers-generic curl git libxrender-dev \
+        libpng3 libpng-dev libjpeg-turbo8 libjpeg-turbo8-dev libicu55 libicu-dev \
+        libgles2-mesa libgles2-mesa-dev libfreetype6-dev libsqlite3-dev \
+	libgstreamer0.10-0 libgstreamer0.10-dev \
+        libogg-dev libvorbis-dev bzip2 gperf bison ruby flex && \
+    rm -rf /var/lib/apt/lists/*
 
-# Add the JDK 8 and accept licenses (mandatory)
-RUN add-apt-repository ppa:webupd8team/java && \
-    echo debconf shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-    echo debconf shared/accepted-oracle-license-v1-1 seen true | debconf-set-selections
+# Choose Qt version
 
-# Install Java 8
-RUN apt-get update && \
-    apt-get --yes --no-install-recommends install oracle-java8-installer
+ENV QT_VERSION_MAJOR 5.9
+ENV QT_VERSION 5.9.4
 
-ADD . /wms
-WORKDIR /wms
+# Compile and install Qt Base
 
-RUN ./gmcorewmscd/start
+ENV QT_DIST /usr/local/Qt-"$QT_VERSION"
+ENV QT_BASE_SRC https://download.qt.io/official_releases/qt/"$QT_VERSION_MAJOR"/"$QT_VERSION"/submodules/qtbase-opensource-src-"$QT_VERSION".tar.xz
+ENV QT_BASE_DIR /qtbase-opensource-src-"$QT_VERSION"
+
+RUN curl -sSL $QT_BASE_SRC | tar xJ \
+    && cd $QT_BASE_DIR \
+    && bash ./configure --help \
+    && bash ./configure -opensource -confirm-license -static -no-accessibility -sql-sqlite -sqlite -no-qml-debug \
+       -no-harfbuzz -openssl-linked -qt-pcre -no-dbus -nomake tools \
+       -no-xkbcommon-evdev -no-xinput2 -no-xcb-xlib -no-glib -qt-xcb -no-compile-examples -nomake examples \
+       -no-gif -qt-doubleconversion -no-gtk \
+    && make install
+
+ENV PATH $QT_DIST/bin:$PATH
+
+# Compile and install Qt Script
+
+ENV QT_SCRIPT_SRC https://download.qt.io/official_releases/qt/"$QT_VERSION_MAJOR"/"$QT_VERSION"/submodules/qtscript-opensource-src-"$QT_VERSION".tar.xz
+ENV QT_SCRIPT_DIR /qtscript-opensource-src-"$QT_VERSION"
+
+RUN curl -sSL $QT_SCRIPT_SRC | tar xJ \
+    && cd $QT_SCRIPT_DIR \
+    && qmake \
+    && make install \
+    && cd /
+
+# Compile and install Qt SVG
+
+ENV QT_SVG_SRC https://download.qt.io/official_releases/qt/"$QT_VERSION_MAJOR"/"$QT_VERSION"/submodules/qtsvg-opensource-src-"$QT_VERSION".tar.xz
+ENV QT_SVG_DIR /qtsvg-opensource-src-"$QT_VERSION"
+
+RUN curl -sSL $QT_SVG_SRC | tar xJ \
+    && cd $QT_SVG_DIR \
+    && qmake \
+    && make install \
+    && cd /
+
+# Compile and install Qt WebKit
+
+ENV QT_WEBKIT_SRC https://download.qt.io/community_releases/"$QT_VERSION_MAJOR"/"$QT_VERSION"/qtwebkit-opensource-src-"$QT_VERSION".tar.xz
+ENV QT_WEBKIT_DIR /qtwebkit-opensource-src-"$QT_VERSION"
+
+#RUN curl -sSL $QT_WEBKIT_SRC | tar xJ \
+#    && cd $QT_WEBKIT_DIR \
+#    && qmake \
+#    && make install \
+#    && cd /
+
+# Clean compilation files
+
+RUN cd $QT_BASE_DIR && make clean \
+    && cd $QT_SCRIPT_DIR && make clean \
+    && cd $QT_SVG_DIR && make clean
+
+ADD build.sh /build.sh
+CMD ["bash", "/build.sh"]
+#ADD . /wms
+#WORKDIR /wms
+#
+#CD /gmcorewmscd
+#RUN ./start

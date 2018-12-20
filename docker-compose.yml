@@ -1,0 +1,8 @@
+version: '2.1'
+services:
+
+  builder:
+    image: hadim/docker-qt
+    volumes:
+      - ./gmcorewmscd:/gmcorewmscd
+      - ./build.sh:/build.sh
