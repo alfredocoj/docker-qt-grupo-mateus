@@ -32,10 +32,7 @@ RUN add-apt-repository ppa:webupd8team/java && \
 RUN apt-get update && \
     apt-get --yes --no-install-recommends install oracle-java8-installer
 
-ADD . /HelloWorld
-WORKDIR /HelloWorld
-RUN g++ -o main main.cpp
-RUN ./main
+ADD . /wms
+WORKDIR /wms
 
-# overwrite this with 'CMD []' in a dependent Dockerfile
-CMD ["/bin/bash"]
+RUN ./gmcorewmscd/start
