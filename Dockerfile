@@ -76,6 +76,7 @@ RUN cd $QT_BASE_DIR && make clean \
 
 ADD build.sh /build.sh
 CMD ["bash", "/build.sh"]
+
 #ADD . /wms
 #WORKDIR /wms
 #

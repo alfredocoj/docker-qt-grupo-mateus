@@ -5,4 +5,12 @@ services:
     image: hadim/docker-qt
     volumes:
       - ./gmcorewmscd:/gmcorewmscd
+      - ./infraestrutura:/infraestrutura
+      - ./infrastructure:/infrastructure
+      - ./infrastructure_gmcore:/infrastructure_gmcore
+      - ./seguranca:/seguranca
+      - ./test:/test
+      - ./wms_cd:/wms_cd
+      - ./wms_cd_integracao:/wms_cd_integracao
+      - ./Makefile:/Makefile
       - ./build.sh:/build.sh
