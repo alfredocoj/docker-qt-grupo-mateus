@@ -1,5 +1,4 @@
 FROM ubuntu:latest
-MAINTAINER Hadrien Mary <hadrien.mary@gmail.com>
 
 # Install core dependencies
 
