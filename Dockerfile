@@ -76,8 +76,10 @@ RUN cd $QT_BASE_DIR && make clean \
 ADD build.sh /build.sh
 CMD ["bash", "/build.sh"]
 
+CMD ["cd", "/gmcorewmscd"]
+
+RUN ./start
+
 #ADD . /wms
 #WORKDIR /wms
 #
-#CD /gmcorewmscd
-#RUN ./start
