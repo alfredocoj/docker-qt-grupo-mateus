@@ -83,9 +83,9 @@ WORKDIR /
 #CD /var/lib/jenkins/workspace/WMSHomologacaoRelease/release/wms_cd/
 RUN qmake CONFIG+=release gmcore_wms.pro
 RUN make
-#
-#CMD ["bash", "build.sh"]
-CD release
-CMD ["cp","start.sh release"]
+
+CMD ["cp","start.sh release/"]
+
 CMD ["cd", "release/"]
+
 CMD ["bash", "start.sh"]
