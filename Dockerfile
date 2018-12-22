@@ -61,11 +61,11 @@ RUN curl -sSL $QT_SVG_SRC | tar xJ \
 ENV QT_WEBKIT_SRC https://download.qt.io/community_releases/"$QT_VERSION_MAJOR"/"$QT_VERSION"/qtwebkit-opensource-src-"$QT_VERSION".tar.xz
 ENV QT_WEBKIT_DIR /qtwebkit-opensource-src-"$QT_VERSION"
 
-#RUN curl -sSL $QT_WEBKIT_SRC | tar xJ \
-#    && cd $QT_WEBKIT_DIR \
-#    && qmake \
-#    && make install \
-#    && cd /
+RUN curl -sSL $QT_WEBKIT_SRC | tar xJ \
+    && cd $QT_WEBKIT_DIR \
+    && qmake \
+    && make install \
+    && cd /
 
 # Clean compilation files
 
@@ -73,13 +73,13 @@ RUN cd $QT_BASE_DIR && make clean \
     && cd $QT_SCRIPT_DIR && make clean \
     && cd $QT_SVG_DIR && make clean
 
+ADD . /
+
 ADD build.sh /build.sh
-CMD ["bash", "/build.sh"]
+ADD start.sh /start.sh
 
-CMD ["cd", "/gmcorewmscd"]
+WORKDIR /
 
-RUN ./start
+CMD ["bash", "build.sh"]
 
-#ADD . /wms
-#WORKDIR /wms
-#
+CMD ["bash", "start.sh"]
