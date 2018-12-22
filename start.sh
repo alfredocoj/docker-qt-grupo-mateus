@@ -1,23 +1,25 @@
 #!/bin/bash
 
-echo 'diretorio list'
-DIRS=`find . -maxdepth 3 -type d`
+echo 'encontrando os diretorios do projeto\n'
+DIRS=`find . -type f -name '*lib*' | sed -r 's|/[^/]+$||' |sort -u`
 
-LIBRARY_PATH=``
-
-echo 'inicio do for'
+echo 'varrendo diretorios ...\n'
+count=1
 for DIR in $DIRS
 do
-LIBRARY_PATH=`$LIBRARY_PATH:$DIR`
-echo $LIBRARY_PATH
+if [ $count -gt 1 ] ; then
+    path=$DIR
+    count=2
+else
+    path=$path:$DIR
+fi
 done
 
-echo $LIBRARY_PATH
+echo 'diretorios encontrados...\n'
+echo $path
 
-echo 'expor LD_LIBRARY_PATH'
-export LD_LIBRARY_PATH=$LIBRARY_PATH
+echo 'export LD_LIBRARY_PATH\n'
+export LD_LIBRARY_PATH=$path
 
-#export LD_LIBRARY_PATH=$script_dir:$script_dir/infraestrutura:$script_dir/wms_cd:$script_dir/infrastructure/interface:$script_dir/infrastructure/log:$script_dir/infrastructure/mvc:$script$
-
-echo 'start'
-${script_dir}/gmcorewmscd/gmcorewmscd wms_cd_webservice
+echo 'start\n'
+$(pwd)/gmcorewmscd/gmcorewmscd wms_cd_webservice
