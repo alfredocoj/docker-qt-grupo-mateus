@@ -1,6 +1,6 @@
 #!/bin/bash
 
-cd release/wms_cd
+cd $DIR_PROJETO_QT
 
 DIRS=`find . -maxdepth 4 -mindepth 1 -type d`
 
@@ -15,12 +15,17 @@ else
 fi
 done
 
+echo "ENV PATH de projeto"
 echo $path
 
-echo 'export LD_LIBRARY_PATH and QT_QPA_PLATFORM_PLUGIN_PATH'
-export LD_LIBRARY_PATH=$path:/home/qt/libs
-export QT_QPA_PLATFORM_PLUGIN_PATH=/home/qt/libs
-export QT_PLUGIN_PATH=/home/qt/plugins
+echo"ENV HOME: "
+echo $HOME
+
+
+echo 'export ENVs LD_LIBRARY_PATH and QT_QPA_PLATFORM_PLUGIN_PATH'
+export LD_LIBRARY_PATH=$path:$HOME/qt/libs
+export QT_QPA_PLATFORM_PLUGIN_PATH=$HOME/qt/libs
+export QT_PLUGIN_PATH=$HOME/qt/plugins
 #export ODBCINST=/etc/odbcinst.ini
 #export ODBCINI=/etc/odbc.ini
 
