@@ -1,9 +1,9 @@
 #!/bin/bash
 
-echo 'encontrando os diretorios do projeto\n'
-DIRS=`find . -type f -name '*lib*' | sed -r 's|/[^/]+$||' |sort -u`
+cd release/wms_cd
 
-echo 'varrendo diretorios ...\n'
+DIRS=`find . -maxdepth 4 -mindepth 1 -type d`
+
 count=1
 for DIR in $DIRS
 do
@@ -15,11 +15,19 @@ else
 fi
 done
 
-echo 'diretorios encontrados...\n'
 echo $path
 
-echo 'export LD_LIBRARY_PATH\n'
-export LD_LIBRARY_PATH=$path
+echo 'export LD_LIBRARY_PATH and QT_QPA_PLATFORM_PLUGIN_PATH'
+export LD_LIBRARY_PATH=$path:/home/qt/libs
+export QT_QPA_PLATFORM_PLUGIN_PATH=/home/qt/libs
+export QT_PLUGIN_PATH=/home/qt/plugins
+#export ODBCINST=/etc/odbcinst.ini
+#export ODBCINI=/etc/odbc.ini
 
-echo 'start\n'
+
+echo $LD_LIBRARY_PATH 
+
+#export LD_LIBRARY_PATH=$script_dir:$script_dir/infraestrutura:$script_dir/wms_cd:$script_dir/infrastructure/interface:$script_dir/infrastructure/log:$script_dir/infrastructure/mvc:$script$
+
+echo 'start...'
 $(pwd)/gmcorewmscd/gmcorewmscd wms_cd_webservice
