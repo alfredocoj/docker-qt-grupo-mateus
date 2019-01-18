@@ -39,8 +39,9 @@ WORKDIR $HOME
 
 RUN echo "PWD is: $PWD"
 
-COPY ./qt/odbcinst.ini /etc/
-COPY ./qt/odbc.ini /etc/
+RUN echo -e "[freetds]\r\ndescription    = v0.63 with protocol v8.0\r\ndriver    = /usr/lib/x86_64-linux-gnu/odbc/libtdsodbc.so\r\nsetup    = /usr/lib/x86_64-linux-gnu/odbc/libtdss.so\r\nusagecount    = 1" >> /etc/odbcinst.ini
+#COPY ./qt/odbcinst.ini /etc/
+#COPY ./qt/odbc.ini /etc/
 
 #RUN qmake $HOME/qt/sqldrivers/odbc/odbc.pro && make && make install
 
