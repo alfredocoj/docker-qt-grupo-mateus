@@ -37,10 +37,10 @@ ADD . $HOME/
 
 WORKDIR $HOME
 
-CMD ["ls","-la"]
+RUN echo "PWD is: $PWD"
 
-COPY qt/odbcinst.ini /etc/
-COPY qt/odbc.ini /etc/
+COPY ./qt/odbcinst.ini /etc/
+COPY ./qt/odbc.ini /etc/
 
 #RUN qmake $HOME/qt/sqldrivers/odbc/odbc.pro && make && make install
 
