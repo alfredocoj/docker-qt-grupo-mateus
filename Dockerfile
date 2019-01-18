@@ -37,6 +37,8 @@ ADD . $HOME/
 
 WORKDIR $HOME
 
+CMD ['pwd']
+
 COPY qt/odbcinst.ini /etc/
 COPY qt/odbc.ini /etc/
 
